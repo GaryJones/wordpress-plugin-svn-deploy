@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Github to WordPress Plugin Directory Deployment Script, Git-Flow Version : Deploys a WordPress plugin from Github (git) to the WordPress Plugin Repostiory (svn), taking account of git-flow usage." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Github to WordPress Plugin Directory Deployment Script, Git-Flow Version</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy">View on GitHub</a>
+
+          <h1 id="project_title">Github to WordPress Plugin Directory Deployment Script, Git-Flow Version</h1>
+          <h2 id="project_tagline">Deploys a WordPress plugin from Github (git) to the WordPress Plugin Repostiory (svn), taking account of git-flow usage.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>Credits &amp; History</h2>
+
+<p>Well over 90% of this script was written by others:</p>
+
+<ul>
+<li>
+<strong><a href="https://twitter.com/deanclatworthy">Dean Clatworthy</a></strong> - <a href="https://github.com/deanc/wordpress-plugin-git-svn">Original script</a>
+</li>
+<li>
+<strong><a href="https://twitter.com/thenbrent">Brent Shepherd</a></strong> - <a href="http://thereforei.am/2011/04/21/git-to-svn-automated-wordpress-plugin-deployment/">Avoids permanent local SVN repo, avoids sending redundant stuff to WP repo</a>
+</li>
+<li>
+<strong><a href="https://twitter.com/BFTrick">Patrick Rauland</a></strong> - <a href="https://github.com/BFTrick/jotform-integration/blob/master/deploy.sh">Support for WP assets folder for plugin page banner and screenshots</a>
+</li>
+<li>
+<strong><a href="https://twitter.com/benbalter">Ben Balter</a></strong> - <a href="https://github.com/benbalter/Github-to-WordPress-Plugin-Directory-Deployment-Script/">Submodules support and plugin slug prompt</a>
+</li>
+<li>
+<strong><a href="https://twitter.com/GaryJ">Gary Jones</a></strong> <em>(me)</em> - <a href="https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy">Personalisation and commenting out bits not required when using git-flow</a> </li>
+</ul><h2>Process</h2>
+
+<p>These are the steps that he deployment script undertakes:</p>
+
+<ol>
+<li>Prompts for plugin slug.</li>
+<li>Verifies plugin header version number matches readme stable version number.</li>
+<li>Pushes latest git commit and tags to GitHub.</li>
+<li>Creates temporary checkout of SVN repo.</li>
+<li>Ignores non-WordPress repo files from SVN.</li>
+<li>Copies git export to SVN trunk.</li>
+<li>Checks out any submodules.</li>
+<li>Copies contents of assets directory in trunk to a directory parallel to trunk.</li>
+<li>Commits SVN trunk, assets and tag.</li>
+<li>Attempts to remove temporary SVN checkout.</li>
+</ol><h2>Usage</h2>
+
+<p>With <a href="https://github.com/nvie/gitflow">git-flow</a>, specifically the <code>git flow release finish ...</code> command, the release branch is merged into the develop branch, the master branch and a tag is created, so these aren't needed with this deploy script.</p>
+
+<p>I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Github to WordPress Plugin Directory Deployment Script, Git-Flow Version maintained by <a href="https://github.com/GaryJones">GaryJones</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
