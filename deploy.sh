@@ -61,8 +61,8 @@ git push origin master
 git push origin master --tags
 
 echo 
-echo "Creating local copy of SVN repo ..."
-svn co $SVNURL $SVNPATH
+echo "Creating local copy of SVN repo trunk ..."
+svn checkout $SVNURL/trunk $SVNPATH/trunk
 
 echo "Ignoring GitHub specific files"
 svn propset svn:ignore "README.md
@@ -84,6 +84,7 @@ fi
 
 # Support for the /assets folder on the .org repo.
 echo "Moving assets"
+# Make the directory if it doesn't already exist
 mkdir $SVNPATH/assets/
 mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
 svn add $SVNPATH/assets/
@@ -91,12 +92,18 @@ svn delete $SVNPATH/trunk/assets
 
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/
+# Delete all files that should not now be added.
+svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
 svn commit --username=$SVNUSER -m "Preparing for $NEWVERSION1 release"
 
 echo "Updating WordPress plugin repo assets and committing"
 cd $SVNPATH/assets/
+# Add all new files that are not set to be ignored
+svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
+# Add all new files that are not set to be ignored
+svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
 svn commit --username=$SVNUSER -m "Updating assets"
 
 echo "Creating new SVN tag and committing it"
@@ -106,6 +113,8 @@ cd $SVNPATH/tags/$NEWVERSION1
 svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 
 echo "Removing temporary directory $SVNPATH"
+cd $SVNPATH
+cd ..
 rm -fr $SVNPATH/
 
 echo "*** FIN ***"
