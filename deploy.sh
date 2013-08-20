@@ -1,6 +1,8 @@
 #! /bin/bash
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
+echo "WordPress Plugin Git-Flow SVN Deploy v1.0.0"
+
 echo -e "Plugin Slug: \c"
 read PLUGINSLUG
 
