@@ -12,7 +12,7 @@ Well over 90% of this script was written by others:
  - **[Gary Jones](https://twitter.com/GaryJ)** *(me)* - [Personalisation and commenting out bits not required when using git-flow](https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy) 
  
 ## Process
- 1. Prompts for plugin slug.
+ 1. Prompts for plugin slug and other data.
  - Verifies plugin header version number matches readme stable version number.
  - Pushes latest git commit and tags to GitHub.
  - Creates temporary checkout of SVN repo.
@@ -26,7 +26,7 @@ Well over 90% of this script was written by others:
 ## Usage
  With [git-flow](https://github.com/nvie/gitflow), specifically the `git flow release finish ...` command, the release branch is merged into the develop branch, the master branch and a tag is created, so these aren't needed with this deploy script.
  
- I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
+ I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, confirm or amend default suggestions, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
  
  
  
