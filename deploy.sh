@@ -1,23 +1,62 @@
 #! /bin/bash
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
+echo
 echo "WordPress Plugin Git-Flow SVN Deploy v1.0.0-dev"
+echo
+echo "Step 1. Let's collect some information first."
+echo
+echo "Default values are in brackets - just hit enter to accept them."
+echo
 
-echo -e "WordPress Repo Plugin Slug: \c"
-read PLUGINSLUG
+# Get some user input
+# Can't use the -i flag for read, since that doesn't work for bash 3
+read -e -p "1a) WordPress Repo Plugin Slug e.g. my-awesome-plugin: " PLUGINSLUG
+echo
 
-# main config
+# Set up some default values. Feel free to change these in your own script
 CURRENTDIR=`pwd`
-PLUGINDIR="$CURRENTDIR/$PLUGINSLUG"
-MAINFILE="$PLUGINSLUG.php" # this should be the name of your main PHP file in the WordPress plugin
+default_svnpath="/tmp/$PLUGINSLUG"
+default_svnurl="http://plugins.svn.wordpress.org/$PLUGINSLUG"
+default_svnuser="GaryJ"
+default_plugindir="$CURRENTDIR/$PLUGINSLUG"
+default_mainfile="$PLUGINSLUG.php"
+
+echo "1b) Path to a local directory where a temporary SVN checkout can be made."
+read -e -p "No trailing slash and don't add trunk ($default_svnpath): " input
+SVNPATH="${input:-$default_svnpath}"
+echo
+
+echo "1c) Remote SVN repo on WordPress.org. No trailing slash."
+read -e -p "($default_svnurl): " input
+SVNURL="${input:-$default_svnurl}"
+echo
+
+read -e -p "1d) Your WordPress repo SVN username ($default_svnuser): " input
+SVNUSER="${input:-$default_svnuser}"
+echo
+
+echo "1e) Your local plugin root directory, the Git repo."
+read -e -p "($default_plugindir): " input
+PLUGINDIR="${input:-$default_plugindir}"
+echo
+
+read -e -p "1f) Name of the main plugin file ($default_mainfile): " input
+MAINFILE="${input:-$default_mainfile}"
+echo
+
+echo "That's all of the data collected."
+echo
+echo "Slug: $PLUGINSLUG"
+echo "Temp checkout path: $SVNPATH"
+echo "Remote SVN repo: $SVNURL"
+echo "SVN username: $SVNUSER"
+echo "Plugin directory: $PLUGINDIR"
+echo "Main file: $MAINFILE"
+echo
 
 # git config
 GITPATH="$PLUGINDIR/" # this file should be in the base of your git repository
-
-# svn config
-SVNPATH="/tmp/$PLUGINSLUG" # path to a temp SVN repo. No trailing slash required and don't add trunk.
-SVNURL="http://plugins.svn.wordpress.org/$PLUGINSLUG" # Remote SVN repo on WordPress.org, with no trailing slash
-SVNUSER="GaryJ" # your svn username
 
 # Let's begin...
 echo ".........................................."
