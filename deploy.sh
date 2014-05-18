@@ -128,8 +128,8 @@ echo "Moving assets"
 # Make the directory if it doesn't already exist
 mkdir -p $SVNPATH/assets/
 mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
-svn add $SVNPATH/assets/
-svn delete $SVNPATH/trunk/assets
+svn add --force $SVNPATH/assets/
+svn delete --force $SVNPATH/trunk/assets
 
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/
