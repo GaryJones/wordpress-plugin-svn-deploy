@@ -126,7 +126,7 @@ fi
 # Support for the /assets folder on the .org repo.
 echo "Moving assets"
 # Make the directory if it doesn't already exist
-mkdir $SVNPATH/assets/
+mkdir -p $SVNPATH/assets/
 mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
 svn add $SVNPATH/assets/
 svn delete $SVNPATH/trunk/assets
