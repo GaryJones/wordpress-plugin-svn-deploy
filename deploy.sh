@@ -126,10 +126,10 @@ fi
 # Support for the /assets folder on the .org repo.
 echo "Moving assets"
 # Make the directory if it doesn't already exist
-mkdir $SVNPATH/assets/
+mkdir -p $SVNPATH/assets/
 mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
-svn add $SVNPATH/assets/
-svn delete $SVNPATH/trunk/assets
+svn add --force $SVNPATH/assets/
+svn delete --force $SVNPATH/trunk/assets
 
 echo "Changing directory to SVN and committing to trunk"
 cd $SVNPATH/trunk/
@@ -150,6 +150,9 @@ svn commit --username=$SVNUSER -m "Updating assets"
 echo "Creating new SVN tag and committing it"
 cd $SVNPATH
 svn copy trunk/ tags/$NEWVERSION1/
+# Remove assets and trunk directories from tag directory
+svn delete --force $SVNPATH/tags/$NEWVERSION1/assets
+svn delete --force $SVNPATH/tags/$NEWVERSION1/trunk
 cd $SVNPATH/tags/$NEWVERSION1
 svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 
