@@ -103,7 +103,7 @@ git push origin master --tags
 
 echo 
 echo "Creating local copy of SVN repo trunk ..."
-svn checkout $SVNURL/trunk $SVNPATH/trunk
+svn checkout $SVNURL $SVNPATH --depth immediates
 
 echo "Ignoring GitHub specific files"
 svn propset svn:ignore "README.md
