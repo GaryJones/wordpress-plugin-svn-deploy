@@ -104,7 +104,7 @@ git push origin master --tags
 echo 
 echo "Creating local copy of SVN repo trunk ..."
 svn checkout $SVNURL $SVNPATH --depth immediates
-svn update $SVNPATH/trunk --set-depth infinity
+svn update --quiet $SVNPATH/trunk --set-depth infinity
 
 echo "Ignoring GitHub specific files"
 svn propset svn:ignore "README.md
@@ -150,10 +150,11 @@ svn commit --username=$SVNUSER -m "Updating assets"
 
 echo "Creating new SVN tag and committing it"
 cd $SVNPATH
-svn copy trunk/ tags/$NEWVERSION1/
+svn update --quiet $SVNPATH/tags/$NEWVERSION1
+svn copy --quiet trunk/ tags/$NEWVERSION1/
 # Remove assets and trunk directories from tag directory
-svn delete --force $SVNPATH/tags/$NEWVERSION1/assets
-svn delete --force $SVNPATH/tags/$NEWVERSION1/trunk
+svn delete --force --quiet $SVNPATH/tags/$NEWVERSION1/assets
+svn delete --force --quiet $SVNPATH/tags/$NEWVERSION1/trunk
 cd $SVNPATH/tags/$NEWVERSION1
 svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
 
