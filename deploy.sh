@@ -60,11 +60,11 @@ GITPATH="$PLUGINDIR/" # this file should be in the base of your git repository
 
 # Let's begin...
 echo ".........................................."
-echo 
+echo
 echo "Preparing to deploy WordPress plugin"
-echo 
+echo
 echo ".........................................."
-echo 
+echo
 
 # Check version in readme.txt is the same as plugin file after translating both to unix line breaks to work around grep's failure to identify mac line breaks
 NEWVERSION1=`grep "^Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r'`
@@ -78,9 +78,9 @@ echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
 
 # GaryJ: Ignore check for git tag, as git flow release finish creates this.
 #if git show-ref --tags --quiet --verify -- "refs/tags/$NEWVERSION1"
-#	then 
-#		echo "Version $NEWVERSION1 already exists as git tag. Exiting...."; 
-#		exit 1; 
+#	then
+#		echo "Version $NEWVERSION1 already exists as git tag. Exiting....";
+#		exit 1;
 #	else
 #		echo "Git version does not exist. Let's proceed..."
 #fi
@@ -101,7 +101,7 @@ echo "Pushing git master to origin, with tags"
 git push origin master
 git push origin master --tags
 
-echo 
+echo
 echo "Creating local copy of SVN repo trunk ..."
 svn checkout $SVNURL $SVNPATH --depth immediates
 svn update $SVNPATH/trunk --set-depth infinity
@@ -111,6 +111,10 @@ svn propset svn:ignore "README.md
 Thumbs.db
 .git
 .gitignore" "$SVNPATH/trunk/"
+
+echo "Ignoring development specific files"
+svn propset svn:ignore "Gruntfile.js
+package.json" "$SVNPATH/grunt/"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
