@@ -2,7 +2,7 @@
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
 echo
-echo "WordPress Plugin Git-Flow SVN Deploy v1.0.0-dev"
+echo "WordPress Plugin Git-Flow SVN Deploy v1.1.0-dev"
 echo
 echo "Step 1. Let's collect some information first."
 echo
@@ -11,7 +11,8 @@ echo
 
 # Get some user input
 # Can't use the -i flag for read, since that doesn't work for bash 3
-read -e -p "1a) WordPress Repo Plugin Slug e.g. my-awesome-plugin: " PLUGINSLUG
+printf "1a) WordPress Repo Plugin Slug e.g. my-awesome-plugin: "
+read -e PLUGINSLUG
 echo
 
 # Set up some default values. Feel free to change these in your own script
@@ -23,25 +24,30 @@ default_plugindir="$CURRENTDIR/$PLUGINSLUG"
 default_mainfile="$PLUGINSLUG.php"
 
 echo "1b) Path to a local directory where a temporary SVN checkout can be made."
-read -e -p "No trailing slash and don't add trunk ($default_svnpath): " input
+printf "No trailing slash and don't add trunk ($default_svnpath): "
+read -e input
 SVNPATH="${input:-$default_svnpath}"
 echo
 
 echo "1c) Remote SVN repo on WordPress.org. No trailing slash."
-read -e -p "($default_svnurl): " input
+printf "($default_svnurl): "
+read -e input
 SVNURL="${input:-$default_svnurl}"
 echo
 
-read -e -p "1d) Your WordPress repo SVN username ($default_svnuser): " input
+printf "1d) Your WordPress repo SVN username ($default_svnuser): "
+read -e input
 SVNUSER="${input:-$default_svnuser}"
 echo
 
 echo "1e) Your local plugin root directory, the Git repo."
-read -e -p "($default_plugindir): " input
+printf "($default_plugindir): "
+read -e  input
 PLUGINDIR="${input:-$default_plugindir}"
 echo
 
-read -e -p "1f) Name of the main plugin file ($default_mainfile): " input
+printf "1f) Name of the main plugin file ($default_mainfile): "
+read -e input
 MAINFILE="${input:-$default_mainfile}"
 echo
 
