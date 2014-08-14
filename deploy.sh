@@ -2,7 +2,7 @@
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
 echo
-echo "WordPress Plugin Git-Flow SVN Deploy v1.1.0-dev"
+echo "WordPress Plugin Git-Flow SVN Deploy v1.0.0-dev2"
 echo
 echo "Step 1. Let's collect some information first."
 echo
@@ -127,7 +127,14 @@ if [ -f ".gitmodules" ]
 		echo "Exporting the HEAD of each submodule from git to the trunk of SVN"
 		git submodule init
 		git submodule update
-		git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'
+		git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |
+			while read path_key path
+			do
+				url_key=$(echo $path_key | sed 's/\.path/.url/')
+				#url=$(git config -f .gitmodules --get "$url_key")
+				#git submodule add $url $path
+				git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'
+			done
 fi
 
 # Support for the /assets folder on the .org repo.
