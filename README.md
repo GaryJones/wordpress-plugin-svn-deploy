@@ -22,11 +22,14 @@ Well over 90% of this script was written by others:
  - Copies contents of assets directory in trunk to a directory parallel to trunk.
  - Commits SVN trunk, assets and tag.
  - Attempts to remove temporary SVN checkout.
+
+## Install
+
+1. In your terminal, `cd` into the directory which contains subdirectories for each of your plugins. i.e. on a local install of WordPress, this will probably be `wp-content/plugins`. Then `git clone https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy.git .` to clone the deploy script locally.
+2. Ensure that the shell script is executable. In Mac / Unix, run `chmod +x deploy.sh`.
+3. Run the script with `sh deploy.sh`. You can also double-click it in Finder / Explorer to start it.
+4. You'll now be guided through a set of questions.
+
+With [git-flow](https://github.com/nvie/gitflow), specifically the `git flow release finish ...` command, the release branch is merged into the develop branch, the master branch and a tag is created, so these aren't needed with this deploy script.
  
-## Usage
- With [git-flow](https://github.com/nvie/gitflow), specifically the `git flow release finish ...` command, the release branch is merged into the develop branch, the master branch and a tag is created, so these aren't needed with this deploy script.
- 
- I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, confirm or amend default suggestions, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
- 
- 
- 
+I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, confirm or amend default suggestions, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
