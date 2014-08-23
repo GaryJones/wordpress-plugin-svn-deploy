@@ -26,29 +26,32 @@ default_mainfile="$PLUGINSLUG.php"
 echo "1b) Path to a local directory where a temporary SVN checkout can be made."
 printf "No trailing slash and don't add trunk ($default_svnpath): "
 read -e input
-SVNPATH="${input:-$default_svnpath}"
+input="${input%/}" # Strip trailing slash
+SVNPATH="${input:-$default_svnpath}" # Populate with default if empty
 echo
 
 echo "1c) Remote SVN repo on WordPress.org. No trailing slash."
 printf "($default_svnurl): "
 read -e input
-SVNURL="${input:-$default_svnurl}"
+input="${input%/}" # Strip trailing slash
+SVNURL="${input:-$default_svnurl}" # Populate with default if empty
 echo
 
 printf "1d) Your WordPress repo SVN username ($default_svnuser): "
 read -e input
-SVNUSER="${input:-$default_svnuser}"
+SVNUSER="${input:-$default_svnuser}" # Populate with default if empty
 echo
 
-echo "1e) Your local plugin root directory, the Git repo."
+echo "1e) Your local plugin root directory, the Git repo. No trailing slash."
 printf "($default_plugindir): "
 read -e  input
-PLUGINDIR="${input:-$default_plugindir}"
+input="${input%/}" # Strip trailing slash
+PLUGINDIR="${input:-$default_plugindir}" # Populate with default if empty
 echo
 
 printf "1f) Name of the main plugin file ($default_mainfile): "
 read -e input
-MAINFILE="${input:-$default_mainfile}"
+MAINFILE="${input:-$default_mainfile}" # Populate with default if empty
 echo
 
 echo "That's all of the data collected."
@@ -166,7 +169,7 @@ svn commit --username=$SVNUSER -m "Preparing for $NEWVERSION1 release"
 
 echo "Updating WordPress plugin repo assets and committing"
 cd $SVNPATH/assets/
-# Add all new files that are not set to be ignored
+# Delete all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
