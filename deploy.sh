@@ -84,24 +84,24 @@ echo ".........................................."
 echo 
 
 # Check version in readme.txt is the same as plugin file after translating both to unix line breaks to work around grep's failure to identify mac line breaks
-NEWVERSION1=`grep "^Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r'`
-echo "readme.txt version: $NEWVERSION1"
-NEWVERSION2=`grep "Version:" $GITPATH/$MAINFILE | awk -F' ' '{print $NF}' | tr -d '\r'`
-echo "$MAINFILE version: $NEWVERSION2"
+PLUGINVERSION=`grep "Version:" $GITPATH/$MAINFILE | awk -F' ' '{print $NF}' | tr -d '\r'`
+echo "$MAINFILE version: $PLUGINVERSION"
+READMEVERSION=`grep "^Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r'`
+echo "readme.txt version: $READMEVERSION"
 
-if [ "$NEWVERSION1" = "trunk" ]; then
-	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
-elif [ "$NEWVERSION1" != "$NEWVERSION2" ]; then
-	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
-	exit 1;
-elif [ "$NEWVERSION1" = "$NEWVERSION2" ]; then
-	echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
+if [ "$READMEVERSION" = "trunk" ]; then
+    echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
+elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
+    echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
+    exit 1;
+elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
+    echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
 fi
 
 # GaryJ: Ignore check for git tag, as git flow release finish creates this.
-#if git show-ref --tags --quiet --verify -- "refs/tags/$NEWVERSION1"
+#if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
 #	then 
-#		echo "Version $NEWVERSION1 already exists as git tag. Exiting...."; 
+#		echo "Version $PLUGINVERSION already exists as git tag. Exiting...."; 
 #		exit 1; 
 #	else
 #		echo "Git version does not exist. Let's proceed..."
@@ -117,7 +117,7 @@ cd $GITPATH
 
 # GaryJ: git flow release finish already covers this tag creation.
 #echo "Tagging new version in git"
-#git tag -a "$NEWVERSION1" -m "Tagging version $NEWVERSION1"
+#git tag -a "$PLUGINVERSION" -m "Tagging version $PLUGINVERSION"
 
 echo "Pushing git master to origin, with tags"
 git push origin master
@@ -170,7 +170,7 @@ cd $SVNPATH/trunk/
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2}' | xargs svn add
-svn commit --username=$SVNUSER -m "Preparing for $NEWVERSION1 release"
+svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
 
 echo "Updating WordPress plugin repo assets and committing"
 cd $SVNPATH/assets/
@@ -183,13 +183,13 @@ svn commit --username=$SVNUSER -m "Updating assets"
 
 echo "Creating new SVN tag and committing it"
 cd $SVNPATH
-svn update --quiet $SVNPATH/tags/$NEWVERSION1
-svn copy --quiet trunk/ tags/$NEWVERSION1/
+svn update --quiet $SVNPATH/tags/$PLUGINVERSION
+svn copy --quiet trunk/ tags/$PLUGINVERSION/
 # Remove assets and trunk directories from tag directory
-svn delete --force --quiet $SVNPATH/tags/$NEWVERSION1/assets
-svn delete --force --quiet $SVNPATH/tags/$NEWVERSION1/trunk
-cd $SVNPATH/tags/$NEWVERSION1
-svn commit --username=$SVNUSER -m "Tagging version $NEWVERSION1"
+svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
+svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
+cd $SVNPATH/tags/$PLUGINVERSION
+svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
 
 echo "Removing temporary directory $SVNPATH"
 cd $SVNPATH
