@@ -13,7 +13,7 @@ Well over 90% of this script was written by others:
  
 ## Process
  1. Prompts for plugin slug and other data.
- - Verifies plugin header version number matches readme stable version number.
+ - Verifies plugin header version number matches readme stable version number or readme stable version is trunk
  - Pushes latest git commit and tags to GitHub.
  - Creates temporary checkout of SVN repo.
  - Ignores non-WordPress repo files from SVN.
