@@ -89,9 +89,14 @@ echo "readme.txt version: $NEWVERSION1"
 NEWVERSION2=`grep "Version:" $GITPATH/$MAINFILE | awk -F' ' '{print $NF}' | tr -d '\r'`
 echo "$MAINFILE version: $NEWVERSION2"
 
-if [ "$NEWVERSION1" != "$NEWVERSION2" ]; then echo "Version in readme.txt & $MAINFILE don't match. Exiting...."; exit 1; fi
-
-echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
+if [ "$NEWVERSION1" = "trunk" ]; then
+	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
+elif [ "$NEWVERSION1" != "$NEWVERSION2" ]; then
+	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
+	exit 1;
+elif [ "$NEWVERSION1" = "$NEWVERSION2" ]; then
+	echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
+fi
 
 # GaryJ: Ignore check for git tag, as git flow release finish creates this.
 #if git show-ref --tags --quiet --verify -- "refs/tags/$NEWVERSION1"
