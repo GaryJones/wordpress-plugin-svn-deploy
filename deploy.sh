@@ -90,12 +90,12 @@ READMEVERSION=`grep "^Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}'
 echo "readme.txt version: $READMEVERSION"
 
 if [ "$READMEVERSION" = "trunk" ]; then
-    echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
+	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
 elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
-    echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
-    exit 1;
+	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
+	exit 1;
 elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
-    echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
+	echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
 fi
 
 # GaryJ: Ignore check for git tag, as git flow release finish creates this.
