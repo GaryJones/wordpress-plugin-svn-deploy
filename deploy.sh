@@ -64,7 +64,7 @@ echo "Plugin directory: $PLUGINDIR"
 echo "Main file: $MAINFILE"
 echo
 
-printf "OK to proceed (y|n)? "
+printf "OK to proceed (Y|n)? "
 read -e input
 PROCEED="${input:-y}"
 echo
