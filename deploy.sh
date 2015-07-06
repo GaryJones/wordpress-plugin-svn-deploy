@@ -132,7 +132,8 @@ echo "Ignoring GitHub specific files"
 svn propset svn:ignore "README.md
 Thumbs.db
 .git
-.gitignore" "$SVNPATH/trunk/"
+.gitignore
+.gitattributes" "$SVNPATH/trunk/"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
