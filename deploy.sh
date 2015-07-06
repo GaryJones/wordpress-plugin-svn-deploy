@@ -66,11 +66,11 @@ echo
 
 printf "OK to proceed (Y|n)? "
 read -e input
-PROCEED="${input:-y}"
+PROCEED="${input:-Y}"
 echo
 
 # Allow user cancellation
-if [ "$PROCEED" != "y" ]; then echo "Aborting..."; exit 1; fi
+if [ "$PROCEED" != "Y" ]; then echo "Aborting..."; exit 1; fi
 
 # git config
 GITPATH="$PLUGINDIR/" # this file should be in the base of your git repository
