@@ -66,22 +66,22 @@ echo
 
 printf "OK to proceed (Y|n)? "
 read -e input
-PROCEED="${input:-y}"
+PROCEED="${input:-Y}"
 echo
 
 # Allow user cancellation
-if [ "$PROCEED" != "y" ]; then echo "Aborting..."; exit 1; fi
+if [ "$PROCEED" != "Y" ]; then echo "Aborting..."; exit 1; fi
 
 # git config
 GITPATH="$PLUGINDIR/" # this file should be in the base of your git repository
 
 # Let's begin...
 echo ".........................................."
-echo 
+echo
 echo "Preparing to deploy WordPress plugin"
-echo 
+echo
 echo ".........................................."
-echo 
+echo
 
 # Check version in readme.txt is the same as plugin file after translating both to unix line breaks to work around grep's failure to identify mac line breaks
 PLUGINVERSION=`grep "Version:" $GITPATH/$MAINFILE | awk -F' ' '{print $NF}' | tr -d '\r'`
@@ -89,9 +89,7 @@ echo "$MAINFILE version: $PLUGINVERSION"
 READMEVERSION=`grep "^Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r'`
 echo "readme.txt version: $READMEVERSION"
 
-if [ "$READMEVERSION" = "trunk" ]; then
-	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
-elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
+if [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
 	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
 	exit 1;
 elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
@@ -100,9 +98,9 @@ fi
 
 # GaryJ: Ignore check for git tag, as git flow release finish creates this.
 #if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
-#	then 
-#		echo "Version $PLUGINVERSION already exists as git tag. Exiting...."; 
-#		exit 1; 
+#	then
+#		echo "Version $PLUGINVERSION already exists as git tag. Exiting....";
+#		exit 1;
 #	else
 #		echo "Git version does not exist. Let's proceed..."
 #fi
@@ -123,7 +121,7 @@ echo "Pushing git master to origin, with tags"
 git push origin master
 git push origin master --tags
 
-echo 
+echo
 echo "Creating local copy of SVN repo trunk ..."
 svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
@@ -134,7 +132,8 @@ CHANGELOG.md
 Thumbs.db
 .github/*
 .git
-.gitignore" "$SVNPATH/trunk/"
+.gitignore
+.gitattributes" "$SVNPATH/trunk/"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
