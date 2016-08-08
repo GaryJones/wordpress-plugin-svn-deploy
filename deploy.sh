@@ -89,9 +89,7 @@ echo "$MAINFILE version: $PLUGINVERSION"
 READMEVERSION=`grep "^Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r'`
 echo "readme.txt version: $READMEVERSION"
 
-if [ "$READMEVERSION" = "trunk" ]; then
-	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
-elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
+if [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
 	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
 	exit 1;
 elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
