@@ -134,8 +134,8 @@ CHANGELOG.md
 Thumbs.db
 .github/*
 .git
-.gitignore
-.gitattributes" "$SVNPATH/trunk/"
+.gitattributes
+.gitignore" "$SVNPATH/trunk/"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
