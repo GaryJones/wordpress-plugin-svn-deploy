@@ -33,3 +33,6 @@ Well over 90% of this script was written by others:
 With [git-flow](https://github.com/nvie/gitflow), specifically the `git flow release finish ...` command, the release branch is merged into the develop branch, the master branch and a tag is created, so these aren't needed with this deploy script.
  
 I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, confirm or amend default suggestions, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
+
+## License
+This package was created at a time when the above credited repositories had no license. For any amendements done since then, the code is [licensed](LICENSE.md) under MIT. For the original work, contact the previous authors.
