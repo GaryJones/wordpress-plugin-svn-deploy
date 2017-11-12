@@ -2,7 +2,7 @@
 # See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
 
 echo
-echo "WordPress Plugin Git-Flow SVN Deploy v2.0.0-dev"
+echo "WordPress Plugin Git-Flow SVN Deploy v2.1.0"
 echo
 echo "Step 1. Let's collect some information first."
 echo
