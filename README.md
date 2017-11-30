@@ -2,28 +2,30 @@
 
 Deploys a WordPress plugin from a local Git repo to the WordPress Plugin Repostiory (SVN).
  
-## Process
+## Steps
+
+These are the steps that the script takes:
  
- 1. Ask for plugin slug.
- 2. Ask for local plugin directory.
- 3. Check local plugin directory exists.
- 4. Ask for main plugin file name.
- 5. Check main plugin file exists.
- 6. Check readme.txt version matches main plugin file version.
- 7. Ask for temporary SVN path.
- 8. Ask for remote SVN repo.
- 9. Ask for SVN username.
- 10. Ask if input is correct, and give chance to abort.
- 11. Check if Git tag exists for version number (must match exactly).
- 12. Checkout SVN repo.
- 13. Set to SVN ignore some GitHub-related files.
- 14. Export HEAD of master from git to the trunk of SVN.
- 15. Initialise and update and git submodules.
- 16. Move /trunk/assets up to /assets.
- 17. Move into /trunk, and SVN commit.
- 18. Move into /assets, and SVN commit.
- 19. Copy /trunk into /tags/{version}, and SVN commit.
- 20. Delete temporary local SVN checkout.
+ 1. Asks for plugin slug.
+ 2. Asks for local plugin directory.
+ 3. Checks local plugin directory exists.
+ 4. Asks for main plugin file name.
+ 5. Checks main plugin file exists.
+ 6. Checks `readme.txt` version matches main plugin file version.
+ 7. Asks for temporary SVN checkout path.
+ 8. Asks for remote SVN repo URL.
+ 9. Asks for SVN username.
+ 10. Asks if input is correct, and gives chance to abort.
+ 11. Checks if Git tag exists for version number (must match exactly).
+ 12. Does checkout of SVN repo.
+ 13. Sets SVN ignore on some GitHub-related files.
+ 14. Exports `HEAD` of `master` from Git to the trunk of SVN.
+ 15. Initialises and updates any git submodules.
+ 16. Moves `/trunk/assets` up to `/assets`.
+ 17. Moves into `/trunk`, and does an SVN commit.
+ 18. Moves into `/assets`, and does an SVN commit.
+ 19. Copies `/trunk` into `/tags/{version}`, and does an SVN commit.
+ 20. Deletes temporary local SVN checkout.
 
 ## Install
 
