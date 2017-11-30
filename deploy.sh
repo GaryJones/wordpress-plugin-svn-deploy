@@ -1,67 +1,122 @@
 #! /bin/bash
-# See https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy for instructions and credits.
+# See https://github.com/GaryJones/wordpress-plugin-svn-deploy for instructions and credits.
+#
+# Steps to deploying:
+#
+#  1. Ask for plugin slug.
+#  2. Ask for local plugin directory.
+#  3. Check local plugin directory exists.
+#  4. Ask for main plugin file name.
+#  5. Check main plugin file exists.
+#  6. Check readme.txt version matches main plugin file version.
+#  7. Ask for temporary SVN path.
+#  8. Ask for remote SVN repo.
+#  9. Ask for SVN username.
+# 10. Ask if input is correct, and give chance to abort.
+# 11. Check if Git tag exists for version number (must match exactly).
+# 12. Checkout SVN repo.
+# 13. Set to SVN ignore some GitHub-related files.
+# 14. Export HEAD of master from git to the trunk of SVN.
+# 15. Initialise and update and git submodules.
+# 16. Move /trunk/assets up to /assets.
+# 17. Move into /trunk, and SVN commit.
+# 18. Move into /assets, and SVN commit.
+# 19. Copy /trunk into /tags/{version}, and SVN commit.
+# 20. Delete temporary local SVN checkout.
 
 echo
-echo "WordPress Plugin Git-Flow SVN Deploy v2.1.0"
+echo "WordPress Plugin SVN Deploy v3.0.0"
 echo
-echo "Step 1. Let's collect some information first."
+echo "Let's collect some information first. There are six questions."
 echo
 echo "Default values are in brackets - just hit enter to accept them."
 echo
 
 # Get some user input
 # Can't use the -i flag for read, since that doesn't work for bash 3
-printf "1a) WordPress Repo Plugin Slug e.g. my-awesome-plugin: "
+printf "Q1. WordPress Repo Plugin Slug e.g. my-awesome-plugin: "
 read -e PLUGINSLUG
 echo
 
 # Set up some default values. Feel free to change these in your own script
-CURRENTDIR=`pwd`
+CURRENTDIR=$(pwd)
 default_svnpath="/tmp/$PLUGINSLUG"
 default_svnurl="https://plugins.svn.wordpress.org/$PLUGINSLUG"
 default_svnuser="GaryJ"
 default_plugindir="$CURRENTDIR/$PLUGINSLUG"
 default_mainfile="$PLUGINSLUG.php"
 
-echo "1b) Path to a local directory where a temporary SVN checkout can be made."
-printf "No trailing slash and don't add trunk ($default_svnpath): "
-read -e input
-input="${input%/}" # Strip trailing slash
-SVNPATH="${input:-$default_svnpath}" # Populate with default if empty
-echo
-
-echo "1c) Remote SVN repo on WordPress.org. No trailing slash."
-printf "($default_svnurl): "
-read -e input
-input="${input%/}" # Strip trailing slash
-SVNURL="${input:-$default_svnurl}" # Populate with default if empty
-echo
-
-printf "1d) Your WordPress repo SVN username ($default_svnuser): "
-read -e input
-SVNUSER="${input:-$default_svnuser}" # Populate with default if empty
-echo
-
-echo "1e) Your local plugin root directory, the Git repo. No trailing slash."
+echo "Q2. Your local plugin root directory (the Git repo)."
 printf "($default_plugindir): "
 read -e  input
 input="${input%/}" # Strip trailing slash
 PLUGINDIR="${input:-$default_plugindir}" # Populate with default if empty
 echo
 
-printf "1f) Name of the main plugin file ($default_mainfile): "
+# Check directory exists.
+if [ ! -d "$PLUGINDIR" ]; then
+  echo "Directory $PLUGINDIR not found. Aborting."
+  exit 1;
+fi
+
+printf "Q3. Name of the main plugin file ($default_mainfile): "
 read -e input
 MAINFILE="${input:-$default_mainfile}" # Populate with default if empty
+echo
+
+# Check main plugin file exists.
+if [ ! -f "$PLUGINDIR/$MAINFILE" ]; then
+  echo "Plugin file $PLUGINDIR/$MAINFILE not found. Aborting."
+  exit 1;
+fi
+
+echo "Checking version in main plugin file matches version in readme.txt file..."
+echo
+
+# Check version in readme.txt is the same as plugin file after translating both to Unix line breaks to work around grep's failure to identify Mac line breaks
+PLUGINVERSION=$(grep -i "Version:" $PLUGINDIR/$MAINFILE | awk -F' ' '{print $NF}' | tr -d '\r')
+echo "$MAINFILE version: $PLUGINVERSION"
+READMEVERSION=$(grep -i "Stable tag:" $PLUGINDIR/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r')
+echo "readme.txt version: $READMEVERSION"
+
+if [ "$READMEVERSION" = "trunk" ]; then
+	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's continue..."
+elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
+	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
+	exit 1;
+elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
+	echo "Versions match in readme.txt and $MAINFILE. Let's continue..."
+fi
+
+echo
+
+echo "Q4. Path to a local directory where a temporary SVN checkout can be made."
+printf "Don't add trunk ($default_svnpath): "
+read -e input
+input="${input%/}" # Strip trailing slash
+SVNPATH="${input:-$default_svnpath}" # Populate with default if empty
+echo
+
+echo "Q5. Remote SVN repo on WordPress.org."
+printf "($default_svnurl): "
+read -e input
+input="${input%/}" # Strip trailing slash
+SVNURL="${input:-$default_svnurl}" # Populate with default if empty
+echo
+
+printf "Q6. Your WordPress repo SVN username ($default_svnuser): "
+read -e input
+SVNUSER="${input:-$default_svnuser}" # Populate with default if empty
 echo
 
 echo "That's all of the data collected."
 echo
 echo "Slug: $PLUGINSLUG"
+echo "Plugin directory: $PLUGINDIR"
+echo "Main file: $MAINFILE"
 echo "Temp checkout path: $SVNPATH"
 echo "Remote SVN repo: $SVNURL"
 echo "SVN username: $SVNUSER"
-echo "Plugin directory: $PLUGINDIR"
-echo "Main file: $MAINFILE"
 echo
 
 printf "OK to proceed (Y|n)? "
@@ -72,9 +127,6 @@ echo
 # Allow user cancellation
 if [ $(echo "$PROCEED" |tr [:upper:] [:lower:]) != "y" ]; then echo "Aborting..."; exit 1; fi
 
-# git config
-GITPATH="$PLUGINDIR/" # this file should be in the base of your git repository
-
 # Let's begin...
 echo ".........................................."
 echo
@@ -83,48 +135,24 @@ echo
 echo ".........................................."
 echo
 
-# Check version in readme.txt is the same as plugin file after translating both to unix line breaks to work around grep's failure to identify mac line breaks
-PLUGINVERSION=`grep -i "Version:" $GITPATH/$MAINFILE | awk -F' ' '{print $NF}' | tr -d '\r'`
-echo "$MAINFILE version: $PLUGINVERSION"
-READMEVERSION=`grep -i "Stable tag:" $GITPATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r'`
-echo "readme.txt version: $READMEVERSION"
+echo
 
-if [ "$READMEVERSION" = "trunk" ]; then
-	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's proceed..."
-elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
-	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
-	exit 1;
-elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
-	echo "Versions match in readme.txt and $MAINFILE. Let's proceed..."
+echo "Changing to $PLUGINDIR"
+cd $PLUGINDIR
+
+# Check for git tag (may need to allow for leading "v"?)
+# if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
+if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
+	then
+		echo "Git tag $PLUGINVERSION does exist. Let's continue..."
+	else
+		echo "$PLUGINVERSION does not exist as a git tag. Aborting.";
+		exit 1;
 fi
 
-# GaryJ: Ignore check for git tag, as git flow release finish creates this.
-#if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
-#	then
-#		echo "Version $PLUGINVERSION already exists as git tag. Exiting....";
-#		exit 1;
-#	else
-#		echo "Git version does not exist. Let's proceed..."
-#fi
-
-echo "Changing to $GITPATH"
-cd $GITPATH
-# GaryJ: Commit message variable not needed . Hard coded for SVN trunk commit for consistency.
-#echo -e "Enter a commit message for this new version: \c"
-#read COMMITMSG
-# GaryJ: git flow release finish already covers this commit.
-#git commit -am "$COMMITMSG"
-
-# GaryJ: git flow release finish already covers this tag creation.
-#echo "Tagging new version in git"
-#git tag -a "$PLUGINVERSION" -m "Tagging version $PLUGINVERSION"
-
-echo "Pushing git master to origin, with tags"
-git push origin master
-git push origin master --tags
-
 echo
-echo "Creating local copy of SVN repo trunk ..."
+
+echo "Creating local copy of SVN repo trunk..."
 svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
 
@@ -158,15 +186,19 @@ if [ -f ".gitmodules" ]
 			done
 fi
 
+echo
+
 # Support for the /assets folder on the .org repo.
-echo "Moving assets"
+echo "Moving assets."
 # Make the directory if it doesn't already exist
 mkdir -p $SVNPATH/assets/
 mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
 svn add --force $SVNPATH/assets/
 svn delete --force $SVNPATH/trunk/assets
 
-echo "Changing directory to SVN and committing to trunk"
+echo
+
+echo "Changing directory to SVN and committing to trunk."
 cd $SVNPATH/trunk/
 # Delete all files that should not now be added.
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
@@ -174,7 +206,9 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs s
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
 svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
 
-echo "Updating WordPress plugin repo assets and committing"
+echo
+
+echo "Updating WordPress plugin repo assets and committing."
 cd $SVNPATH/assets/
 # Delete all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
@@ -183,7 +217,9 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs sv
 svn update --quiet --accept working $SVNPATH/assets/*
 svn commit --username=$SVNUSER -m "Updating assets"
 
-echo "Creating new SVN tag and committing it"
+echo
+
+echo "Creating new SVN tag and committing it."
 cd $SVNPATH
 svn copy --quiet trunk/ tags/$PLUGINVERSION/
 # Remove assets and trunk directories from tag directory
@@ -193,7 +229,9 @@ svn update --quiet --accept working $SVNPATH/tags/$PLUGINVERSION
 cd $SVNPATH/tags/$PLUGINVERSION
 svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
 
-echo "Removing temporary directory $SVNPATH"
+echo
+
+echo "Removing temporary directory $SVNPATH."
 cd $SVNPATH
 cd ..
 rm -fr $SVNPATH/
