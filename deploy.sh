@@ -215,6 +215,7 @@ svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs s
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
 svn update --quiet --accept working $SVNPATH/assets/*
+svn resolved $SVNPATH/assets/*
 svn commit --username=$SVNUSER -m "Updating assets"
 
 echo
@@ -226,6 +227,7 @@ svn copy --quiet trunk/ tags/$PLUGINVERSION/
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
 svn update --quiet --accept working $SVNPATH/tags/$PLUGINVERSION
+svn resolved $SVNPATH/tags/*
 cd $SVNPATH/tags/$PLUGINVERSION
 svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
 
