@@ -227,7 +227,7 @@ svn copy --quiet trunk/ tags/$PLUGINVERSION/
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
 svn update --quiet --accept working $SVNPATH/tags/$PLUGINVERSION
-svn resolved $SVNPATH/tags/*
+svn resolved $SVNPATH/tags/$PLUGINVERSION/*
 cd $SVNPATH/tags/$PLUGINVERSION
 svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
 
