@@ -158,8 +158,13 @@ svn update --quiet $SVNPATH/trunk --set-depth infinity
 
 echo "Ignoring GitHub specific files"
 svn propset svn:ignore "README.md
+CHNAGELOG.md
+composer.json
+composer.lock
 Thumbs.db
+deploy.sh
 .github/*
+.editorconfig
 .git
 .gitattributes
 .gitignore" "$SVNPATH/trunk/"
