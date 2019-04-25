@@ -25,7 +25,7 @@
 # 20. Delete temporary local SVN checkout.
 
 echo
-echo "WordPress Plugin SVN Deploy v3.0.0"
+echo "WordPress Plugin SVN Deploy v3.1.0"
 echo
 echo "Let's collect some information first. There are six questions."
 echo
@@ -157,12 +157,21 @@ svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
 
 echo "Ignoring GitHub specific files"
-svn propset svn:ignore "README.md
+# Use local .svnigore if present
+if [ -f ".svnignore" ]; then
+	SVNIGNORE=$(<.svnignore)
+else
+	SVNIGNORE="README.md
 Thumbs.db
 .github/*
 .git
 .gitattributes
-.gitignore" "$SVNPATH/trunk/"
+.gitignore
+composer.lock"
+fi
+
+svn propset svn:ignore "$SVNIGNORE" "$SVNPATH/trunk/"
+svn status $SVNPATH/trunk --no-ignore | grep "^I"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
