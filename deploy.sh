@@ -159,19 +159,20 @@ svn update --quiet $SVNPATH/trunk --set-depth infinity
 echo "Ignoring GitHub specific files"
 # Use local .svnignore if present
 if [ -f ".svnignore" ]; then
-	SVNIGNORE=$(<.svnignore)
+	echo "Using local .svnignore"
+	SVNIGNORE=$( <.svnignore )
 else
+	echo "Using default .svnignore"
 	SVNIGNORE="README.md
 Thumbs.db
-.github/*
+.github
 .git
 .gitattributes
 .gitignore
 composer.lock"
 fi
 
-svn propset svn:ignore "$SVNIGNORE" "$SVNPATH/trunk/"
-svn status $SVNPATH/trunk --no-ignore | grep "^I"
+svn propset svn:ignore \""$SVNIGNORE"\" "$SVNPATH/trunk/"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
@@ -209,6 +210,8 @@ echo
 
 echo "Changing directory to SVN and committing to trunk."
 cd $SVNPATH/trunk/
+echo 'Use $SVNIGNORE for svn delete. Setting propset svn:ignore seems flaky.'
+echo "$SVNIGNORE" | awk '{print $0}' | xargs svn del --force
 # Delete all files that should not now be added.
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
