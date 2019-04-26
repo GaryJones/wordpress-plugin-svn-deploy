@@ -210,9 +210,9 @@ echo
 
 echo "Changing directory to SVN and committing to trunk."
 cd $SVNPATH/trunk/
-echo 'Use $SVNIGNORE for svn delete. Setting propset svn:ignore seems flaky.'
-echo "$SVNIGNORE" | awk '{print $0}' | xargs svn del --force
 # Delete all files that should not now be added.
+# Use $SVNIGNORE for svn delete. Setting propset svn:ignore seems flaky.
+echo "$SVNIGNORE" | awk '{print $0}' | xargs svn del --force
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
