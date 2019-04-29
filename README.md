@@ -1,11 +1,11 @@
 # WordPress Plugin Directory Deployment Script
 
 Deploys a WordPress plugin from a local Git repo to the WordPress Plugin Repostiory (SVN).
- 
+
 ## Steps
 
 These are the steps that the script takes:
- 
+
  1. Asks for plugin slug.
  2. Asks for local plugin directory.
  3. Checks local plugin directory exists.
@@ -33,8 +33,16 @@ These are the steps that the script takes:
 2. Ensure that the shell script is executable. In Mac / Unix, run `chmod +x deploy.sh`.
 3. Run the script with `sh deploy.sh`. You can also double-click it in Finder / Explorer to start it.
 4. You'll now be guided through a set of questions.
- 
+
 I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, confirm or amend default suggestions, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
+
+## Extras
+
+You may define your own `.plugins_svnignore` file similar to an `svn propset svn:ignore .plugins_svnignore` command. This will remove any listed files and/or directories from committing to the Plugins Directory.
+
+NB: you must list files separately, no wildcards.
+
+Reference: https://stackoverflow.com/questions/17298668/svn-ignore-like-gitignore
 
 ## Credits
 
@@ -45,8 +53,8 @@ At one point, well over 90% of this script was written by others:
  - **[Patrick Rauland](https://twitter.com/BFTrick)** - [Support for WP assets folder for plugin page banner and screenshots](https://github.com/BFTrick/jotform-integration/blob/master/deploy.sh)
  - **[Ben Balter](https://twitter.com/benbalter)** - [Submodules support and plugin slug prompt](https://github.com/benbalter/Github-to-WordPress-Plugin-Directory-Deployment-Script/)
  - **[Gary Jones](https://twitter.com/GaryJ)** *(me)* - [Personalisation and commenting out bits not required when using git-flow](https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy)
- 
- There has been a significant amount of changes since then though. 
+
+ There has been a significant amount of changes since then though.
 
 
 ## License

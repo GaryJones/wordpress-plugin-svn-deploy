@@ -157,12 +157,12 @@ svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
 
 echo "Ignoring GitHub specific files"
-# Use local .svnignore if present
-if [ -f ".svnignore" ]; then
-	echo "Using local .svnignore"
-	SVNIGNORE=$( <.svnignore )
+# Use local .plugins_svnignore if present
+if [ -f ".plugins_svnignore" ]; then
+	echo "Using local .plugins_svnignore"
+	SVNIGNORE=$( <.pluginsvnignore )
 else
-	echo "Using default .svnignore"
+	echo "Using default .plugins_svnignore"
 	SVNIGNORE="README.md
 Thumbs.db
 .github
