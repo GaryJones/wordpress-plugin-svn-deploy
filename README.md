@@ -38,7 +38,7 @@ I prefer to keep this script in the root of my projects directory. Each project 
 
 ## Extras
 
-You may define your own `.plugins_svnignore` file similar to an `svn propset svn:ignore .plugins_svnignore` command. This will remove any listed files and/or directories from committing to the Plugins Directory.
+You may define your own `.svnignore` file similar to an `svn propset svn:ignore .svnignore` command. This will remove any listed files and/or directories from committing to the Plugins Directory.
 
 NB: you must list files separately, no wildcards.
 
