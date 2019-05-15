@@ -25,7 +25,7 @@
 # 20. Delete temporary local SVN checkout.
 
 echo
-echo "WordPress Plugin SVN Deploy v3.0.0"
+echo "WordPress Plugin SVN Deploy v3.1.0"
 echo
 echo "Let's collect some information first. There are six questions."
 echo
@@ -157,12 +157,22 @@ svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
 
 echo "Ignoring GitHub specific files"
-svn propset svn:ignore "README.md
+# Use local .svnignore if present
+if [ -f ".svnignore" ]; then
+	echo "Using local .svnignore"
+	SVNIGNORE=$( <.svnignore )
+else
+	echo "Using default .svnignore"
+	SVNIGNORE="README.md
 Thumbs.db
-.github/*
+.github
 .git
 .gitattributes
-.gitignore" "$SVNPATH/trunk/"
+.gitignore
+composer.lock"
+fi
+
+svn propset svn:ignore \""$SVNIGNORE"\" "$SVNPATH/trunk/"
 
 echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
@@ -201,6 +211,8 @@ echo
 echo "Changing directory to SVN and committing to trunk."
 cd $SVNPATH/trunk/
 # Delete all files that should not now be added.
+# Use $SVNIGNORE for `rm -rf`. Setting propset svn:ignore seems flaky.
+echo "$SVNIGNORE" | awk '{print $0}' | xargs rm -rf
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
 svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
