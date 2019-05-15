@@ -152,9 +152,10 @@ fi
 
 echo
 
-echo "Creating local copy of SVN repo trunk..."
+echo "Creating local copy of SVN repo trunk and current tag..."
 svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
+svn update --quiet $SVNPATH/tags/$PLUGINVERSION --set-depth infinity
 
 echo "Ignoring GitHub specific files"
 # Use local .svnignore if present
@@ -178,33 +179,33 @@ echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
 
 # If submodule exist, recursively check out their indexes
-if [ -f ".gitmodules" ]
-	then
-		echo "Exporting the HEAD of each submodule from git to the trunk of SVN"
-		git submodule init
-		git submodule update
-		git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |
-			while read path_key path
-			do
-				#url_key=$(echo $path_key | sed 's/\.path/.url/')
-				#url=$(git config -f .gitmodules --get "$url_key")
-				#git submodule add $url $path
-				echo "This is the submodule path: $path"
-				echo "The following line is the command to checkout the submodule."
-				echo "git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'"
-				git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'
-			done
-fi
-
-echo
+#if [ -f ".gitmodules" ]
+#	then
+#		echo "Exporting the HEAD of each submodule from git to the trunk of SVN"
+#		git submodule init
+#		git submodule update
+#		git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |
+#			while read path_key path
+#			do
+#				#url_key=$(echo $path_key | sed 's/\.path/.url/')
+#				#url=$(git config -f .gitmodules --get "$url_key")
+#				#git submodule add $url $path
+#				echo "This is the submodule path: $path"
+#				echo "The following line is the command to checkout the submodule."
+#				echo "git submodule foreach --recursive 'git checkout-index -a -f #--prefix=$SVNPATH/trunk/$path/'"
+#				git submodule foreach --recursive 'git checkout-index -a -f #--prefix=$SVNPATH/trunk/$path/'
+#			done
+#fi
+#
+#echo
 
 # Support for the /assets folder on the .org repo.
-echo "Moving assets."
+#echo "Moving assets."
 # Make the directory if it doesn't already exist
-mkdir -p $SVNPATH/assets/
-mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
-svn add --force $SVNPATH/assets/
-svn delete --force $SVNPATH/trunk/assets
+#mkdir -p $SVNPATH/assets/
+#mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
+#svn add --force $SVNPATH/assets/
+#svn delete --force $SVNPATH/trunk/assets
 
 echo
 
@@ -215,39 +216,40 @@ cd $SVNPATH/trunk/
 echo "$SVNIGNORE" | awk '{print $0}' | xargs rm -rf
 svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
 # Add all new files that are not set to be ignored
-svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
-svn commit --username=$SVNUSER -m "Preparing for $PLUGINVERSION release"
+#svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
+svn add --targets readme.txt
+svn commit --username=$SVNUSER -m "Updating readme.txt"
+
+#echo
+
+#echo "Updating WordPress plugin repo assets and committing."
+#cd $SVNPATH/assets/
+## Delete all new files that are not set to be ignored
+#svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn #del
+## Add all new files that are not set to be ignored
+#svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
+#svn update --quiet --accept working $SVNPATH/assets/*
+#svn resolve --accept working $SVNPATH/assets/*
+#svn commit --username=$SVNUSER -m "Updating assets"
 
 echo
 
-echo "Updating WordPress plugin repo assets and committing."
-cd $SVNPATH/assets/
-# Delete all new files that are not set to be ignored
-svn status | grep -v "^.[ \t]*\..*" | grep "^\!" | awk '{print $2"@"}' | xargs svn del
-# Add all new files that are not set to be ignored
-svn status | grep -v "^.[ \t]*\..*" | grep "^?" | awk '{print $2"@"}' | xargs svn add
-svn update --quiet --accept working $SVNPATH/assets/*
-svn resolve --accept working $SVNPATH/assets/*
-svn commit --username=$SVNUSER -m "Updating assets"
-
-echo
-
-echo "Creating new SVN tag and committing it."
+echo "Updating readme.txt to SVN tag and committing it."
 cd $SVNPATH
-svn copy --quiet trunk/ tags/$PLUGINVERSION/
+svn copy --quiet trunk/readme.txt tags/$PLUGINVERSION/
 # Remove assets and trunk directories from tag directory
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
 svn update --quiet --accept working $SVNPATH/tags/$PLUGINVERSION
 #svn resolve --accept working $SVNPATH/tags/$PLUGINVERSION/*
 cd $SVNPATH/tags/$PLUGINVERSION
-svn commit --username=$SVNUSER -m "Tagging version $PLUGINVERSION"
+svn commit --username=$SVNUSER -m "Update readme.txt in version $PLUGINVERSION"
 
 echo
 
 echo "Removing temporary directory $SVNPATH."
 cd $SVNPATH
 cd ..
-rm -fr $SVNPATH/
+#rm -fr $SVNPATH/
 
 echo "*** FIN ***"
