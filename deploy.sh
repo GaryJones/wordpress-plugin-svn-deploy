@@ -155,6 +155,7 @@ echo
 echo "Creating local copy of SVN repo trunk..."
 svn checkout $SVNURL $SVNPATH --depth immediates
 svn update --quiet $SVNPATH/trunk --set-depth infinity
+svn update --quiet $SVNPATH/tags/$PLUGINVERSION --set-depth infinity
 
 echo "Ignoring GitHub specific files"
 # Use local .svnignore if present
@@ -234,6 +235,12 @@ echo
 
 echo "Creating new SVN tag and committing it."
 cd $SVNPATH
+# If current tag not empty then update readme.txt
+if [ -n "$(ls -A tags/$PLUGINVERSION 2>/dev/null)" ]; then
+	echo "Updating readme.txt to tag $PLUGINVERSION"
+	svn delete --force tags/$PLUGINVERSION/readme.txt
+	svn copy trunk/readme.txt tags/$PLUGINVERSION
+fi
 svn copy --quiet trunk/ tags/$PLUGINVERSION/
 # Remove assets and trunk directories from tag directory
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
