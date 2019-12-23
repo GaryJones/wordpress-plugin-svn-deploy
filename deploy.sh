@@ -198,13 +198,12 @@ fi
 
 echo
 
-# Support for the /assets folder on the .org repo.
+# Support for the /assets folder on the .org repo, locally this will be /.wordpress-org
 echo "Moving assets."
 # Make the directory if it doesn't already exist
 mkdir -p $SVNPATH/assets/
-mv $SVNPATH/trunk/assets/* $SVNPATH/assets/
+mv $SVNPATH/trunk/.wordpress-org/* $SVNPATH/assets/
 svn add --force $SVNPATH/assets/
-svn delete --force $SVNPATH/trunk/assets
 
 echo
 
