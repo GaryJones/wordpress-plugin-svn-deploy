@@ -2,6 +2,8 @@
 
 Deploys a WordPress plugin from a local Git repo to the WordPress Plugin Repostiory (SVN).
 
+Please note that if your repository contains a folder `/.wordpress-org` it will be used to contain those files that will be transferred to your SVN `/assets` folder. These assets are the plugin banner images, icons, and any `readme.txt` related files.
+
 ## Steps
 
 These are the steps that the script takes:
@@ -21,7 +23,7 @@ These are the steps that the script takes:
  13. Sets SVN ignore on some GitHub-related files.
  14. Exports `HEAD` of `master` from Git to the trunk of SVN.
  15. Initialises and updates any git submodules.
- 16. Moves `/trunk/assets` up to `/assets`.
+ 16. Moves `/trunk/.wordpress-org` up to SVN `/assets`.
  17. Moves into `/trunk`, and does an SVN commit.
  18. Moves into `/assets`, and does an SVN commit.
  19. Copies `/trunk` into `/tags/{version}`, and does an SVN commit.
