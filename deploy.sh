@@ -25,7 +25,7 @@
 # 20. Delete temporary local SVN checkout.
 
 echo
-echo "WordPress Plugin SVN Deploy v3.1.0"
+echo "WordPress Plugin SVN Deploy v4.0.0"
 echo
 echo "Let's collect some information first. There are six questions."
 echo
