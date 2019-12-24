@@ -6,23 +6,25 @@
 #  1. Ask for plugin slug.
 #  2. Ask for local plugin directory.
 #  3. Check local plugin directory exists.
-#  4. Ask for main plugin file name.
-#  5. Check main plugin file exists.
-#  6. Check readme.txt version matches main plugin file version.
-#  7. Ask for temporary SVN path.
-#  8. Ask for remote SVN repo.
-#  9. Ask for SVN username.
-# 10. Ask if input is correct, and give chance to abort.
-# 11. Check if Git tag exists for version number (must match exactly).
-# 12. Checkout SVN repo.
-# 13. Set to SVN ignore some GitHub-related files.
-# 14. Export HEAD of master from git to the trunk of SVN.
-# 15. Initialise and update and git submodules.
-# 16. Move /trunk/assets up to /assets.
-# 17. Move into /trunk, and SVN commit.
-# 18. Move into /assets, and SVN commit.
-# 19. Copy /trunk into /tags/{version}, and SVN commit.
-# 20. Delete temporary local SVN checkout.
+#  4. Ask for local SVN assets directory.
+#  5. Check local SVN assets directory exists.
+#  6. Ask for main plugin file name.
+#  7. Check main plugin file exists.
+#  8. Check readme.txt version matches main plugin file version.
+#  9. Ask for temporary SVN path.
+# 10. Ask for remote SVN repo.
+# 11. Ask for SVN username.
+# 12. Ask if input is correct, and give chance to abort.
+# 13. Check if Git tag exists for version number (must match exactly).
+# 14. Checkout SVN repo.
+# 15. Set to SVN ignore some GitHub-related files.
+# 16. Export HEAD of master from git to the trunk of SVN.
+# 17. Initialise and update and git submodules.
+# 18. Move /trunk/assets up to /assets.
+# 19. Move into /trunk, and SVN commit.
+# 20. Move into /assets, and SVN commit.
+# 21. Copy /trunk into /tags/{version}, and SVN commit.
+# 22. Delete temporary local SVN checkout.
 
 echo
 echo "WordPress Plugin SVN Deploy v4.0.0"
@@ -45,6 +47,7 @@ default_svnurl="https://plugins.svn.wordpress.org/$PLUGINSLUG"
 default_svnuser="GaryJ"
 default_plugindir="$CURRENTDIR/$PLUGINSLUG"
 default_mainfile="$PLUGINSLUG.php"
+default_assetsdir=".wordpress-org"
 
 echo "Q2. Your local plugin root directory (the Git repo)."
 printf "($default_plugindir): "
@@ -59,7 +62,20 @@ if [ ! -d "$PLUGINDIR" ]; then
   exit 1;
 fi
 
-printf "Q3. Name of the main plugin file ($default_mainfile): "
+echo "Q3. Your local repository directory for SVN assets."
+printf "($default_assetsdir): "
+read -e input
+ASSETSDIR="${input:-$default_assetsdir}" # Populate with default if empty
+echo
+
+# Check if SVN assets directory exists.
+if [ ! -d "$PLUGINDIR/$ASSETSDIR" ]; then
+	echo "SVN assets directory $PLUGINDIR/$ASSETSDIR not found."
+	echo "This is not fatal but you may not have intended results."
+	echo
+fi
+
+printf "Q4. Name of the main plugin file ($default_mainfile): "
 read -e input
 MAINFILE="${input:-$default_mainfile}" # Populate with default if empty
 echo
@@ -90,21 +106,21 @@ fi
 
 echo
 
-echo "Q4. Path to a local directory where a temporary SVN checkout can be made."
+echo "Q5. Path to a local directory where a temporary SVN checkout can be made."
 printf "Don't add trunk ($default_svnpath): "
 read -e input
 input="${input%/}" # Strip trailing slash
 SVNPATH="${input:-$default_svnpath}" # Populate with default if empty
 echo
 
-echo "Q5. Remote SVN repo on WordPress.org."
+echo "Q6. Remote SVN repo on WordPress.org."
 printf "($default_svnurl): "
 read -e input
 input="${input%/}" # Strip trailing slash
 SVNURL="${input:-$default_svnurl}" # Populate with default if empty
 echo
 
-printf "Q6. Your WordPress repo SVN username ($default_svnuser): "
+printf "Q7. Your WordPress repo SVN username ($default_svnuser): "
 read -e input
 SVNUSER="${input:-$default_svnuser}" # Populate with default if empty
 echo
