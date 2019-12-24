@@ -8,28 +8,28 @@ Please note that if your repository contains a folder `/.wordpress-org` it will 
 
 These are the steps that the script takes:
 
- 1. Asks for plugin slug.
- 2. Asks for local plugin directory.
- 3. Checks local plugin directory exists.
- 4. Asks for local SVN assets directory.
- 5. Checks local SVN assets directory exists.
- 6. Asks for main plugin file name.
- 7. Checks main plugin file exists.
- 8. Checks `readme.txt` version matches main plugin file version.
- 9. Asks for temporary SVN checkout path.
- 10. Asks for remote SVN repo URL.
- 11. Asks for SVN username.
- 12. Asks if input is correct, and gives chance to abort.
- 13. Checks if Git tag exists for version number (must match exactly).
- 14. Does checkout of SVN repo.
- 15. Sets SVN ignore on some GitHub-related files.
- 16. Exports `HEAD` of `master` from Git to the trunk of SVN.
- 17. Initialises and updates any git submodules.
- 18. Moves `/trunk/.wordpress-org` up to SVN `/assets`.
- 19. Moves into `/trunk`, and does an SVN commit.
- 20. Moves into `/assets`, and does an SVN commit.
- 21. Copies `/trunk` into `/tags/{version}`, and does an SVN commit.
- 22. Deletes temporary local SVN checkout.
+  1. Asks for plugin slug.
+  1. Asks for local plugin directory.
+  1. Checks local plugin directory exists.
+  1. Asks for local SVN assets directory.
+  1. Checks local SVN assets directory exists.
+  1. Asks for main plugin file name.
+  1. Checks main plugin file exists.
+  1. Checks `readme.txt` version matches main plugin file version.
+  1. Asks for temporary SVN checkout path.
+  1. Asks for remote SVN repo URL.
+  1. Asks for SVN username.
+  1. Asks if input is correct, and gives chance to abort.
+  1. Checks if Git tag exists for version number (must match exactly).
+  1. Does checkout of SVN repo.
+  1. Sets SVN ignore on some GitHub-related files.
+  1. Exports `HEAD` of `master` from Git to the trunk of SVN.
+  1. Initialises and updates any git submodules.
+  1. Moves `/trunk/.wordpress-org` up to SVN `/assets`.
+  1. Moves into `/trunk`, and does an SVN commit.
+  1. Moves into `/assets`, and does an SVN commit.
+  1. Copies `/trunk` into `/tags/{version}`, and does an SVN commit.
+  1. Deletes temporary local SVN checkout.
 
 ## Install
 
