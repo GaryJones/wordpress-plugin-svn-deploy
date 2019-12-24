@@ -33,10 +33,10 @@ These are the steps that the script takes:
 
 ## Install
 
-1. In your terminal, `cd` into the directory which contains subdirectories for each of your plugins. i.e. on a local install of WordPress, this will probably be `wp-content/plugins`. Then `git clone https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy.git .` to clone the deploy script locally.
-2. Ensure that the shell script is executable. In Mac / Unix, run `chmod +x deploy.sh`.
-3. Run the script with `sh deploy.sh`. You can also double-click it in Finder / Explorer to start it.
-4. You'll now be guided through a set of questions.
+  1. In your terminal, `cd` into the directory which contains subdirectories for each of your plugins. i.e. on a local install of WordPress, this will probably be `wp-content/plugins`. Then `git clone https://github.com/GaryJones/wordpress-plugin-git-flow-svn-deploy.git .` to clone the deploy script locally.
+  2. Ensure that the shell script is executable. In Mac / Unix, run `chmod +x deploy.sh`.
+  3. Run the script with `sh deploy.sh`. You can also double-click it in Finder / Explorer to start it.
+  4. You'll now be guided through a set of questions.
 
 I prefer to keep this script in the root of my projects directory. Each project directory is named as the plugin slug, as is the corresponding GitHub repo. To use, just call the script, enter the plugin slug, confirm or amend default suggestions, and sit back as the code is sent to SVN and git repos including tags. The commit messages here are hard-coded for consistency.
 
