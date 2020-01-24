@@ -27,7 +27,7 @@
 # 22. Delete temporary local SVN checkout.
 
 echo
-echo "WordPress Plugin SVN Deploy v4.0.0"
+echo "WordPress Plugin SVN Deploy v4.1.0"
 echo
 echo "Let's collect some information first. There are six questions."
 echo
@@ -257,8 +257,7 @@ if [ -n "$(ls -A tags/$PLUGINVERSION 2>/dev/null)" ]; then
 	svn copy trunk/readme.txt tags/$PLUGINVERSION
 fi
 svn copy --quiet trunk/ tags/$PLUGINVERSION/
-# Remove assets and trunk directories from tag directory
-svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
+# Remove trunk directories from tag directory
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
 svn update --quiet --accept working $SVNPATH/tags/$PLUGINVERSION
 #svn resolve --accept working $SVNPATH/tags/$PLUGINVERSION/*
