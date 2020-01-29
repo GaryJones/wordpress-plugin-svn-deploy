@@ -27,7 +27,7 @@
 # 22. Delete temporary local SVN checkout.
 
 echo
-echo "WordPress Plugin SVN Deploy v4.0.0"
+echo "WordPress Plugin SVN Deploy v4.1.0"
 echo
 echo "Let's collect some information first. There are six questions."
 echo
@@ -51,15 +51,15 @@ default_assetsdir=".wordpress-org"
 
 echo "Q2. Your local plugin root directory (the Git repo)."
 printf "($default_plugindir): "
-read -e  input
-input="${input%/}" # Strip trailing slash
+read -e input
+input="${input%/}"                       # Strip trailing slash
 PLUGINDIR="${input:-$default_plugindir}" # Populate with default if empty
 echo
 
 # Check directory exists.
 if [ ! -d "$PLUGINDIR" ]; then
-  echo "Directory $PLUGINDIR not found. Aborting."
-  exit 1;
+	echo "Directory $PLUGINDIR not found. Aborting."
+	exit 1
 fi
 
 echo "Q3. Your local repository directory for SVN assets."
@@ -82,8 +82,8 @@ echo
 
 # Check main plugin file exists.
 if [ ! -f "$PLUGINDIR/$MAINFILE" ]; then
-  echo "Plugin file $PLUGINDIR/$MAINFILE not found. Aborting."
-  exit 1;
+	echo "Plugin file $PLUGINDIR/$MAINFILE not found. Aborting."
+	exit 1
 fi
 
 echo "Checking version in main plugin file matches version in readme.txt file..."
@@ -99,7 +99,7 @@ if [ "$READMEVERSION" = "trunk" ]; then
 	echo "Version in readme.txt & $MAINFILE don't match, but Stable tag is trunk. Let's continue..."
 elif [ "$PLUGINVERSION" != "$READMEVERSION" ]; then
 	echo "Version in readme.txt & $MAINFILE don't match. Exiting...."
-	exit 1;
+	exit 1
 elif [ "$PLUGINVERSION" = "$READMEVERSION" ]; then
 	echo "Versions match in readme.txt and $MAINFILE. Let's continue..."
 fi
@@ -109,14 +109,14 @@ echo
 echo "Q5. Path to a local directory where a temporary SVN checkout can be made."
 printf "Don't add trunk ($default_svnpath): "
 read -e input
-input="${input%/}" # Strip trailing slash
+input="${input%/}"                   # Strip trailing slash
 SVNPATH="${input:-$default_svnpath}" # Populate with default if empty
 echo
 
 echo "Q6. Remote SVN repo on WordPress.org."
 printf "($default_svnurl): "
 read -e input
-input="${input%/}" # Strip trailing slash
+input="${input%/}"                 # Strip trailing slash
 SVNURL="${input:-$default_svnurl}" # Populate with default if empty
 echo
 
@@ -141,7 +141,10 @@ PROCEED="${input:-y}"
 echo
 
 # Allow user cancellation
-if [ $(echo "$PROCEED" |tr [:upper:] [:lower:]) != "y" ]; then echo "Aborting..."; exit 1; fi
+if [ $(echo "$PROCEED" | tr [:upper:] [:lower:]) != "y" ]; then
+	echo "Aborting..."
+	exit 1
+fi
 
 # Let's begin...
 echo ".........................................."
@@ -158,12 +161,11 @@ cd $PLUGINDIR
 
 # Check for git tag (may need to allow for leading "v"?)
 # if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
-if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"
-	then
-		echo "Git tag $PLUGINVERSION does exist. Let's continue..."
-	else
-		echo "$PLUGINVERSION does not exist as a git tag. Aborting.";
-		exit 1;
+if git show-ref --tags --quiet --verify -- "refs/tags/$PLUGINVERSION"; then
+	echo "Git tag $PLUGINVERSION does exist. Let's continue..."
+else
+	echo "$PLUGINVERSION does not exist as a git tag. Aborting."
+	exit 1
 fi
 
 echo
@@ -177,7 +179,7 @@ echo "Ignoring GitHub specific files"
 # Use local .svnignore if present
 if [ -f ".svnignore" ]; then
 	echo "Using local .svnignore"
-	SVNIGNORE=$( <.svnignore )
+	SVNIGNORE=$(<.svnignore)
 else
 	echo "Using default .svnignore"
 	SVNIGNORE="README.md
@@ -195,22 +197,20 @@ echo "Exporting the HEAD of master from git to the trunk of SVN"
 git checkout-index -a -f --prefix=$SVNPATH/trunk/
 
 # If submodule exist, recursively check out their indexes
-if [ -f ".gitmodules" ]
-	then
-		echo "Exporting the HEAD of each submodule from git to the trunk of SVN"
-		git submodule init
-		git submodule update
-		git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |
-			while read path_key path
-			do
-				#url_key=$(echo $path_key | sed 's/\.path/.url/')
-				#url=$(git config -f .gitmodules --get "$url_key")
-				#git submodule add $url $path
-				echo "This is the submodule path: $path"
-				echo "The following line is the command to checkout the submodule."
-				echo "git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'"
-				git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'
-			done
+if [ -f ".gitmodules" ]; then
+	echo "Exporting the HEAD of each submodule from git to the trunk of SVN"
+	git submodule init
+	git submodule update
+	git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |
+		while read path_key path; do
+			#url_key=$(echo $path_key | sed 's/\.path/.url/')
+			#url=$(git config -f .gitmodules --get "$url_key")
+			#git submodule add $url $path
+			echo "This is the submodule path: $path"
+			echo "The following line is the command to checkout the submodule."
+			echo "git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'"
+			git submodule foreach --recursive 'git checkout-index -a -f --prefix=$SVNPATH/trunk/$path/'
+		done
 fi
 
 echo
@@ -257,8 +257,7 @@ if [ -n "$(ls -A tags/$PLUGINVERSION 2>/dev/null)" ]; then
 	svn copy trunk/readme.txt tags/$PLUGINVERSION
 fi
 svn copy --quiet trunk/ tags/$PLUGINVERSION/
-# Remove assets and trunk directories from tag directory
-svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/assets
+# Remove trunk directories from tag directory
 svn delete --force --quiet $SVNPATH/tags/$PLUGINVERSION/trunk
 svn update --quiet --accept working $SVNPATH/tags/$PLUGINVERSION
 #svn resolve --accept working $SVNPATH/tags/$PLUGINVERSION/*
